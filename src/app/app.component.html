@@ -1,6 +1,4 @@
 <section>
-  <h1 id="title" *ngIf="frame$ | async as frame">{{frame | json}}</h1>
-
   <div class="btn-toolbar-pinButtons" role="toolbar">
     <button id="btn0" type="button" class="btn-btn-default" data-toggle="tooltip" data-placement="bottom"
       title="No pins knocked down" (click)="hS(0);" value="0" style="display: inline;">
@@ -67,7 +65,9 @@
         <th colspan="6">Frame 10</th>
       </tr>
       <tr>
-        <td colspan="3">5</td>
+        <ng-container *ngIf="game$ | async as game">
+          <td *ngFor="let item of game.game" colspan="3">{{item.value.rolls}}</td>
+        </ng-container>
         <td colspan="3"></td>
         <td colspan="3"></td>
         <td colspan="3"></td>

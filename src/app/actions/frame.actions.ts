@@ -6,3 +6,8 @@ export const storeRoll = createAction(
   props<{ pinsKnocked: number }>()
 );
 export const isSpare = createAction('[FRAME] IS SPARE');
+export const defaultValue = createAction('[FRAME] DEFAULT VALUE');
+export const setBonusValue = createAction(
+  '[FRAME] SET BONUS VALUE',
+  props<{ bonus: string }>());
+

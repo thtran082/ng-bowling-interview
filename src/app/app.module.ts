@@ -4,7 +4,7 @@ import { StoreModule } from '@ngrx/store';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { frameReducer } from './reducers/frame.reducer';
+import { rootReducer } from './reducers/root.reducer';
 
 @NgModule({
   declarations: [
@@ -14,7 +14,7 @@ import { frameReducer } from './reducers/frame.reducer';
     BrowserModule,
     AppRoutingModule,
     StoreModule.forRoot({
-      frame: frameReducer
+      ...rootReducer,
     })
   ],
   providers: [],

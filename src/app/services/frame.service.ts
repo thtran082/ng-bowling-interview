@@ -1,7 +1,8 @@
 import { Injectable } from "@angular/core";
 import { Store } from "@ngrx/store";
-import { combineLatest, Observable, of, switchMap } from "rxjs";
-import { isSpare, storeRoll } from "../actions/frame.actions";
+import { BehaviorSubject, combineLatest, Observable, of, switchMap, tap } from "rxjs";
+import { defaultValue, isSpare, setBonusValue, storeRoll } from "../actions/frame.actions";
+import { initialState as initFrameState } from "../reducers/frame.reducer";
 
 export interface IFrame {
   rolls: any[];
@@ -10,41 +11,33 @@ export interface IFrame {
 }
 
 @Injectable({
-  providedIn:  'root',
+  providedIn: 'root',
 })
 export class FrameService {
-  private _rolls: any[] = [];
-  private _score: number = 0;
-  private _bonus: string = '';
 
   public frame$: Observable<IFrame>;
+  public frame: BehaviorSubject<IFrame> = new BehaviorSubject(initFrameState);
 
-  constructor(private store: Store<{frame: IFrame}>) {
-    this.frame$ = this.store.select('frame');
+  constructor(private store: Store<{ frame: IFrame }>) {
+    this.frame$ = this.store.select('frame').pipe(
+      tap((val) => this.frame.next(val))
+    );
   }
 
   public roll(pinsKnocked: number) {
-    this._storeRoll(pinsKnocked);
-    if (this._rolls.length === 0) {
+    if (this.frame.value.rolls.length === 0) {
+      this.store.dispatch(storeRoll({ pinsKnocked }));
       if (pinsKnocked === 10) {
-        this._bonus = 'strike';
+        this.store.dispatch(setBonusValue({ bonus: 'strike' }));
       }
     } else {
-      this._isSpare();
+      this.store.dispatch(storeRoll({ pinsKnocked }));
+      this.store.dispatch(isSpare());
+      
     }
   }
 
   public setDefaultValues() {
-    this._rolls = [];
-    this._score = 0;
-    this._bonus = '';
-  }
-
-  public _storeRoll(pinsKnocked: number) {
-    this.store.dispatch(storeRoll({pinsKnocked}));
-  }
-
-  public _isSpare() {
-    this.store.dispatch(isSpare());
+    this.store.dispatch(defaultValue());
   }
 }

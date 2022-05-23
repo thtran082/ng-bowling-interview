@@ -1,6 +1,6 @@
 import { state } from '@angular/animations';
 import { createReducer, on } from '@ngrx/store';
-import { isSpare, roll, storeRoll } from '../actions/frame.actions';
+import { defaultValue, isSpare, roll, setBonusValue, storeRoll } from '../actions/frame.actions';
 import { IFrame } from '../services/frame.service';
 
 export const initialState: IFrame = {
@@ -19,5 +19,12 @@ export const frameReducer = createReducer(
   on(isSpare, (state) => ({
     ...state,
     bonus: state.score === 10 && state.rolls[0] < 10 ? 'spare' : state.bonus,
+  })),
+  on(defaultValue, () => ({
+    ...initialState,
+  })),
+  on(setBonusValue, (state, { bonus }) => ({
+    ...state,
+    bonus,
   }))
 );
